@@ -397,25 +397,8 @@ function GradesEvaluation() {
       </div>
 
       {/* Bulletin Generation */}
-      <div className="bg-card rounded-lg border border-border p-6">
-        <h2 className="text-lg font-bold mb-4">Génération de bulletins</h2>
-        <p className="text-muted-foreground mb-4">Générez et validez les bulletins pour vos élèves</p>
-        <div className="flex gap-3">
-          <select className="flex-1 px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-            <option>Sélectionner la classe</option>
-            <option>2nde C</option>
-            <option>1ère S</option>
-          </select>
-          <select className="flex-1 px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-            <option>Période</option>
-            <option>Trimestre 1</option>
-            <option>Trimestre 2</option>
-          </select>
-          <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-medium flex items-center gap-2">
-            <Download className="w-4 h-4" /> Générer
-          </button>
-        </div>
-      </div>
+      {/* Section pour la génération des bulletins scolaires par classe et période */}
+      
     </div>
   )
 }
