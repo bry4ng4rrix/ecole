@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Lock, Mail, BookOpen, User, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 function Login() {
   const [role, setRole] = useState('student')
@@ -89,121 +95,115 @@ function Login() {
         </div>
 
         {/* Card principale */}
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/30 p-6 md:p-8 border border-white/10">
-          {/* Sélection rôle */}
-          <div className="mb-7">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Je suis :
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { value: 'student', label: 'Élève', icon: User },
-                { value: 'parent',  label: 'Parent',  icon: User },
-                { value: 'teacher', label: 'Professeur', icon: BookOpen },
-                { value: 'admin',   label: 'Admin',   icon: Lock },
-              ].map(opt => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setRole(opt.value)}
-                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-200 border ${
-                    role === opt.value
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
-                      : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'
-                  }`}
-                >
-                  <opt.icon className="w-5 h-5" />
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Message d'erreur */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                !
+        <Card className="bg-white/95 backdrop-blur-md border-white/10 shadow-2xl">
+          <CardHeader>
+            <CardTitle className="text-center">Connexion</CardTitle>
+            <CardDescription className="text-center">
+              Accédez à votre espace personnel
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Sélection rôle */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Je suis :</Label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'student', label: 'Élève', icon: User },
+                  { value: 'parent',  label: 'Parent',  icon: User },
+                  { value: 'teacher', label: 'Professeur', icon: BookOpen },
+                  { value: 'admin',   label: 'Admin',   icon: Lock },
+                ].map(opt => (
+                  <Button
+                    key={opt.value}
+                    type="button"
+                    variant={role === opt.value ? "default" : "outline"}
+                    className="h-auto py-3"
+                    onClick={() => setRole(opt.value)}
+                  >
+                    <opt.icon className="w-4 h-4 mr-2" />
+                    {opt.label}
+                  </Button>
+                ))}
               </div>
-              {error}
             </div>
-          )}
 
-          {/* Formulaire */}
-          <form onSubmit={handleLogin} className="space-y-5">
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Email / Identifiant
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  value={email}
+            {/* Message d'erreur */}
+            {error && (
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
+                {error}
+              </div>
+            )}
+
+            {/* Formulaire */}
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email / Identifiant</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
                   onChange={(e) => {
                     setEmail(e.target.value)
                     setError('')
                   }}
-                  placeholder="exemple@lycee.mg"
-                  autoComplete="email"
-                  required
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-                />
+                    placeholder="exemple@lycee.mg"
+                    autoComplete="email"
+                    required
+                    className="pl-11"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Mot de passe */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value)
-                    setError('')
-                  }}
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  required
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-                />
+              {/* Mot de passe */}
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value)
+                      setError('')
+                    }}
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    required
+                    className="pl-11"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Options */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="text-gray-600">Se souvenir de moi</span>
-              </label>
-              <a href="#" className="text-indigo-600 hover:text-indigo-800 hover:underline">
-                Mot de passe oublié ?
-              </a>
-            </div>
+              {/* Options */}
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="remember"
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="remember" className="text-muted-foreground">Se souvenir de moi</Label>
+                </div>
+                <a href="#" className="text-primary hover:underline">
+                  Mot de passe oublié ?
+                </a>
+              </div>
 
-            {/* Bouton connexion */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 py-3.5 px-6 mt-4 rounded-xl text-white font-semibold transition-all ${
-                loading
-                  ? 'bg-indigo-400 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 shadow-lg shadow-indigo-500/30'
-              }`}
-            >
-              {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-              {loading ? 'Connexion en cours...' : 'Se connecter'}
-            </button>
-          </form>
-        </div>
+              {/* Bouton connexion */}
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full"
+              >
+                {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                {loading ? 'Connexion en cours...' : 'Se connecter'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
         {/* Footer */}
         <p className="text-center text-indigo-200/80 text-sm mt-8">

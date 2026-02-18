@@ -5,6 +5,15 @@ import {
   LogOut, User, BookOpen, BarChart3, Clock, FileText,
   MessageSquare, Menu, X, Download, Eye, Bell, Home, Calendar, AlertCircle
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('home')
@@ -25,67 +34,96 @@ function StudentDashboard() {
     alert('Déconnexion effectuée')
   }
 
+  const InfoCard = ({ title, value, icon: Icon, status }) => (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold">{value}</p>
+            {status && (
+              <Badge variant={status === 'good' ? 'default' : 'destructive'} className="mt-2">
+                {status === 'good' ? 'À jour' : 'En retard'}
+              </Badge>
+            )}
+          </div>
+          <Icon className="w-8 h-8 text-muted-foreground" />
+        </div>
+      </CardContent>
+    </Card>
+  )
+
+  const SidebarContent = () => (
+    <div className="h-full flex flex-col">
+      <div className="p-6 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground">Menu Étudiant</h2>
+      </div>
+      <nav className="flex-1 p-4 space-y-2">
+        {menuItems.map(item => {
+          const Icon = item.icon
+          return (
+            <Button
+              key={item.id}
+              variant={activeTab === item.id ? "default" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab(item.id)}
+            >
+              <Icon className="w-4 h-4 mr-3" />
+              {item.label}
+            </Button>
+          )
+        })}
+      </nav>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-20">
         <div className="flex justify-between items-center px-6 py-4">
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden p-2 hover:bg-muted rounded-lg"
-            >
-              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="md:hidden">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-0">
+                <SidebarContent />
+              </SheetContent>
+            </Sheet>
             <div>
               <h1 className="text-2xl font-bold text-primary">SIG-Lycée Étudiant</h1>
               <p className="text-xs text-muted-foreground">Portail Étudiant Sécurisé</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="p-2 hover:bg-muted rounded-lg relative">
+            <Button variant="ghost" size="sm" className="relative">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-destructive hover:bg-muted rounded-lg transition-colors"
+              className="text-destructive hover:text-destructive"
             >
               <LogOut className="w-5 h-5" />
-              <span className="hidden sm:inline">Déconnexion</span>
-            </button>
+              <span className="hidden sm:inline ml-2">Déconnexion</span>
+            </Button>
           </div>
         </div>
       </header>
 
       <div className="flex">
-        {/* Sidebar */}
-        <aside className={`${
-          sidebarOpen ? 'w-64' : 'w-0'
-        } bg-sidebar border-r border-sidebar-border overflow-y-auto transition-all duration-300 hidden md:block fixed md:relative h-[calc(100vh-73px)]`}>
-          <nav className="p-4 space-y-2">
-            {menuItems.map(item => {
-              const Icon = item.icon
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium ${
-                    activeTab === item.id
-                      ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                      : 'text-sidebar-foreground hover:bg-sidebar-accent'
-                  }`}
-                >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-                  <span>{item.label}</span>
-                </button>
-              )
-            })}
-          </nav>
+        {/* Sidebar desktop */}
+        <aside className="hidden md:block w-64 bg-card border-r border-border">
+          <SidebarContent />
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto md:ml-0">
+        <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {activeTab === 'home' && <StudentDashboardOverview />}
             {activeTab === 'profil' && <StudentProfile />}

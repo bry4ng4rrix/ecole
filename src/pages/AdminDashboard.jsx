@@ -6,6 +6,14 @@ import {
   MessageSquare, Menu, X, Download, Edit2, Trash2, Plus, TrendingUp, TrendingDown,
   Calendar, CheckCircle, AlertCircle, Home, Layers, Gauge, Database
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('home')
@@ -22,6 +30,30 @@ function AdminDashboard() {
     { id: 'rapports', label: 'Rapports & Stats', icon: BarChart3 },
     { id: 'parametres', label: 'Paramètres', icon: Settings }
   ]
+
+  const StatCard = ({ title, value, change, icon: Icon, trend }) => (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold">{value}</p>
+            <div className="flex items-center mt-1">
+              {trend === 'up' ? (
+                <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
+              ) : (
+                <TrendingDown className="w-4 h-4 text-red-500 mr-1" />
+              )}
+              <span className={`text-sm ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+                {change}
+              </span>
+            </div>
+          </div>
+          <Icon className="w-8 h-8 text-muted-foreground" />
+        </div>
+      </CardContent>
+    </Card>
+  )
 
   const handleLogout = () => {
     alert('Déconnexion effectuée')
@@ -44,59 +76,71 @@ function AdminDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Classes Overview */}
-        <div className="lg:col-span-2 bg-card rounded-lg border border-border p-6">
-          <h2 className="text-xl font-bold mb-4">Distribution par classe</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {['6ème A', '6ème B', '2nde C', '1ère S', 'Term C', 'Term D'].map((cls, i) => (
-              <div key={i} className="bg-muted rounded-lg p-4 text-center">
-                <p className="font-semibold text-primary">{cls}</p>
-                <p className="text-2xl font-bold mt-2">{45 + i * 2}</p>
-                <p className="text-xs text-muted-foreground mt-1">élèves</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Distribution par classe</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {['6ème A', '6ème B', '2nde C', '1ère S', 'Term C', 'Term D'].map((cls, i) => (
+                <Card key={i} className="text-center">
+                  <CardContent className="p-4">
+                    <p className="font-semibold text-primary">{cls}</p>
+                    <p className="text-2xl font-bold mt-2">{45 + i * 2}</p>
+                    <p className="text-xs text-muted-foreground mt-1">élèves</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Quick Actions */}
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h2 className="text-xl font-bold mb-4">Actions rapides</h2>
-          <div className="space-y-2">
-            <button className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 flex items-center gap-2 text-sm font-medium">
-              <Plus className="w-4 h-4" /> Nouvel étudiant
-            </button>
-            <button className="w-full px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 flex items-center gap-2 text-sm font-medium">
-              <FileText className="w-4 h-4" /> Générer bulletins
-            </button>
-            <button className="w-full px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 flex items-center gap-2 text-sm font-medium">
-              <Download className="w-4 h-4" /> Exporter rapports
-            </button>
-          </div>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Actions rapides</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Button className="w-full" variant="default">
+              <Plus className="w-4 h-4 mr-2" /> Nouvel étudiant
+            </Button>
+            <Button className="w-full" variant="secondary">
+              <FileText className="w-4 h-4 mr-2" /> Générer bulletins
+            </Button>
+            <Button className="w-full" variant="outline">
+              <Download className="w-4 h-4 mr-2" /> Exporter rapports
+            </Button>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Recent Activities */}
-      <div className="bg-card rounded-lg border border-border p-6">
-        <h2 className="text-xl font-bold mb-4">Activités récentes</h2>
-        <div className="space-y-3">
-          {[
-            { action: '5 bulletins validés', time: 'Il y a 2h', icon: CheckCircle },
-            { action: 'Paiement de 500k Ar enregistré', time: 'Il y a 4h', icon: DollarSign },
-            { action: '3 nouveaux élèves inscrits', time: 'Il y a 1j', icon: Users },
-            { action: 'Rapport mensuel généré', time: 'Il y a 2j', icon: FileText }
-          ].map((item, i) => {
-            const Icon = item.icon
-            return (
-              <div key={i} className="flex items-center gap-3 p-3 border border-border rounded-lg">
-                <Icon className="w-4 h-4 text-primary flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="font-medium text-sm">{item.action}</p>
-                  <p className="text-xs text-muted-foreground">{item.time}</p>
+      <Card>
+        <CardHeader>
+          <CardTitle>Activités récentes</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {[
+              { action: '5 bulletins validés', time: 'Il y a 2h', icon: CheckCircle },
+              { action: 'Paiement de 500k Ar enregistré', time: 'Il y a 4h', icon: DollarSign },
+              { action: '3 nouveaux élèves inscrits', time: 'Il y a 1j', icon: Users },
+              { action: 'Rapport mensuel généré', time: 'Il y a 2j', icon: FileText }
+            ].map((item, i) => {
+              const Icon = item.icon
+              return (
+                <div key={i} className="flex items-center gap-3 p-3 border rounded-lg">
+                  <Icon className="w-4 h-4 text-primary flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">{item.action}</p>
+                    <p className="text-xs text-muted-foreground">{item.time}</p>
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
+              )
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 
@@ -115,70 +159,110 @@ function AdminDashboard() {
             <h1 className="text-3xl font-bold">Gestion des étudiants</h1>
             <p className="text-muted-foreground mt-1">Inscription, modification et suivi des profils</p>
           </div>
-          <button
+          <Button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-medium"
+            variant="default"
           >
-            <Plus className="w-4 h-4" /> Nouvel étudiant
-          </button>
+            <Plus className="w-4 h-4 mr-2" /> Nouvel étudiant
+          </Button>
         </div>
 
         {showForm && (
-          <div className="bg-card rounded-lg border border-border p-6">
-            <h2 className="text-xl font-bold mb-4">Inscription nouvel étudiant</h2>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Prénom" className="px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-                <input type="text" placeholder="Nom" className="px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-                <input type="email" placeholder="Email" className="px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-                <input type="tel" placeholder="Téléphone" className="px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-                <select className="px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-                  <option>Filière</option>
-                  <option>Scientifique</option>
-                  <option>Littéraire</option>
-                </select>
-                <select className="px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-                  <option>Classe</option>
-                  <option>2nde</option>
-                  <option>1ère</option>
-                  <option>Terminale</option>
-                </select>
-              </div>
-              <div className="flex gap-3">
-                <button type="submit" className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-medium">Inscrire</button>
-                <button type="button" onClick={() => setShowForm(false)} className="flex-1 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 font-medium">Annuler</button>
-              </div>
-            </form>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Inscription nouvel étudiant</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstname">Prénom</Label>
+                    <Input id="firstname" placeholder="Prénom" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastname">Nom</Label>
+                    <Input id="lastname" placeholder="Nom" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="Email" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Téléphone</Label>
+                    <Input id="phone" type="tel" placeholder="Téléphone" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="filiere">Filière</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Filière" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="scientifique">Scientifique</SelectItem>
+                        <SelectItem value="litteraire">Littéraire</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="classe">Classe</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Classe" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2nde">2nde</SelectItem>
+                        <SelectItem value="1ere">1ère</SelectItem>
+                        <SelectItem value="terminale">Terminale</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button type="submit" className="flex-1">Inscrire</Button>
+                  <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1">Annuler</Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         )}
 
-        <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-muted border-b border-border">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold">Matricule</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">Nom</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">Classe</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">Statut</th>
-                <th className="px-6 py-3 text-center text-sm font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {students.map(s => (
-                <tr key={s.id} className="hover:bg-muted/50">
-                  <td className="px-6 py-4 text-sm font-mono">{s.matricule}</td>
-                  <td className="px-6 py-4 text-sm font-medium">{s.name}</td>
-                  <td className="px-6 py-4 text-sm">{s.class}</td>
-                  <td className="px-6 py-4 text-sm"><span className="px-2 py-1 bg-green-500/20 text-green-600 rounded text-xs font-medium">{s.status}</span></td>
-                  <td className="px-6 py-4 text-sm text-center space-x-2">
-                    <button className="text-primary hover:underline"><Edit2 className="w-4 h-4 inline" /></button>
-                    <button className="text-destructive hover:underline"><Trash2 className="w-4 h-4 inline" /></button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Matricule</TableHead>
+                  <TableHead>Nom</TableHead>
+                  <TableHead>Classe</TableHead>
+                  <TableHead>Statut</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {students.map(s => (
+                  <TableRow key={s.id}>
+                    <TableCell className="font-mono">{s.matricule}</TableCell>
+                    <TableCell className="font-medium">{s.name}</TableCell>
+                    <TableCell>{s.class}</TableCell>
+                    <TableCell>
+                      <Badge variant="default" className="bg-green-500/20 text-green-600">
+                        {s.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-center space-x-2">
+                      <Button variant="ghost" size="sm">
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     )
   }

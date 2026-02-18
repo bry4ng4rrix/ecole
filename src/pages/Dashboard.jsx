@@ -2,8 +2,13 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   LogOut, Home, Users, BookOpen, Calendar, FileText, Bell, Settings,
-  GraduationCap, UserCog, ClipboardList, DollarSign, BarChart3
+  GraduationCap, UserCog, ClipboardList, DollarSign, BarChart3, Menu
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -73,85 +78,117 @@ function Dashboard() {
 
   const navItems = getNavItems()
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 lg:relative lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <GraduationCap className="w-8 h-8 text-indigo-600" />
-            <h1 className="text-xl font-bold text-indigo-700">SIG-Lycée</h1>
+  const DashboardCard = ({ icon: Icon, title, value, color, status }) => (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold">{value}</p>
+            {status && (
+              <Badge variant={status === 'good' ? 'default' : 'destructive'} className="mt-2">
+                {status === 'good' ? 'À jour' : 'En retard'}
+              </Badge>
+            )}
           </div>
-          <p className="text-sm text-gray-500 mt-1">{user.role}</p>
+          <Icon className={`w-8 h-8 ${
+            color === 'indigo' ? 'text-indigo-600' :
+            color === 'blue' ? 'text-blue-600' :
+            color === 'green' ? 'text-green-600' :
+            color === 'purple' ? 'text-purple-600' :
+            color === 'red' ? 'text-red-600' :
+            color === 'amber' ? 'text-amber-600' :
+            'text-gray-600'
+          }`} />
         </div>
+      </CardContent>
+    </Card>
+  )
 
-        <nav className="mt-6 px-3 space-y-1">
-          {navItems.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => navigate(item.path)}
-              className="flex items-center gap-3 w-full px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors"
-            >
-              <item.icon className="w-5 h-5" />
-              {item.label}
-            </button>
-          ))}
-        </nav>
+  const SidebarContent = () => (
+    <div className="h-full flex flex-col">
+      <div className="p-6 border-b border-border">
+        <div className="flex items-center gap-3">
+          <GraduationCap className="w-8 h-8 text-primary" />
+          <h1 className="text-xl font-bold text-primary">SIG-Lycée</h1>
+        </div>
+        <Badge variant="secondary" className="mt-2 w-fit">{user.role}</Badge>
+      </div>
 
-        <div className="absolute bottom-0 w-full p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">
-              {user.firstName[0]}{user.lastName[0]}
-            </div>
-            <div>
-              <p className="font-medium">{user.firstName} {user.lastName}</p>
-              <p className="text-xs text-gray-500">{user.email}</p>
-            </div>
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+      <nav className="flex-1 p-4 space-y-1">
+        {navItems.map((item, index) => (
+          <Button
+            key={index}
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => navigate(item.path)}
           >
-            <LogOut className="w-5 h-5" />
-            Déconnexion
-          </button>
-        </div>
-      </aside>
+            <item.icon className="w-5 h-5 mr-3" />
+            {item.label}
+          </Button>
+        ))}
+      </nav>
 
-      {/* Overlay mobile quand sidebar ouverte */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Contenu principal */}
-      <div className="flex-1 flex flex-col">
-        {/* Header mobile */}
-        <header className="bg-white shadow-sm lg:hidden">
-          <div className="px-4 py-3 flex justify-between items-center">
-            <button onClick={() => setSidebarOpen(true)}>
-              <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <h1 className="text-lg font-bold text-indigo-700">SIG-Lycée</h1>
-            <div className="w-6 h-6" /> {/* Espace vide */}
+      <div className="p-4 border-t border-border">
+        <div className="flex items-center gap-3 mb-4">
+          <Avatar className="w-10 h-10">
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              {user.firstName[0]}{user.lastName[0]}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-sm truncate">{user.firstName} {user.lastName}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
           </div>
-        </header>
+        </div>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          Déconnexion
+        </Button>
+      </div>
+    </div>
+  )
 
-        {/* Contenu */}
-        <main className="flex-1 p-4 md:p-8">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-              Bienvenue, {user.firstName} {user.lastName}
-            </h2>
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header mobile */}
+      <header className="bg-card border-b border-border lg:hidden sticky top-0 z-30">
+        <div className="px-4 py-3 flex justify-between items-center">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 p-0">
+              <SidebarContent />
+            </SheetContent>
+          </Sheet>
+          <h1 className="text-lg font-bold text-primary">SIG-Lycée</h1>
+          <div className="w-9 h-9" /> {/* Espace vide */}
+        </div>
+      </header>
+
+      <div className="flex">
+        {/* Sidebar desktop */}
+        <aside className="hidden lg:block w-64 bg-card border-r border-border">
+          <SidebarContent />
+        </aside>
+
+        {/* Contenu principal */}
+        <div className="flex-1">
+          <main className="p-4 md:p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                  Bienvenue, {user.firstName} {user.lastName}
+                </h2>
+                <p className="text-muted-foreground mt-1">Tableau de bord {user.role.toLowerCase()}</p>
+              </div>
 
             {/* Cartes selon rôle */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -195,35 +232,8 @@ function Dashboard() {
                 </>
               )}
             </div>
-          </div>
-        </main>
-      </div>
-    </div>
-  )
-}
-
-// Composant réutilisable pour cartes
-function DashboardCard({ icon: Icon, title, value, color }) {
-  const colorClasses = {
-    indigo: 'bg-indigo-100 text-indigo-700',
-    blue: 'bg-blue-100 text-blue-700',
-    green: 'bg-green-100 text-green-700',
-    red: 'bg-red-100 text-red-700',
-    purple: 'bg-purple-100 text-purple-700',
-    orange: 'bg-orange-100 text-orange-700',
-    amber: 'bg-amber-100 text-amber-700',
-    gray: 'bg-gray-100 text-gray-700',
-  }
-
-  return (
-    <div className={`rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow ${colorClasses[color] || 'bg-gray-100 text-gray-700'}`}>
-      <div className="flex items-center gap-4">
-        <div className="p-3 rounded-lg bg-white/80">
-          <Icon className="w-6 h-6" />
-        </div>
-        <div>
-          <p className="text-sm font-medium opacity-80">{title}</p>
-          <p className="text-xl md:text-2xl font-bold">{value}</p>
+            </div>
+          </main>
         </div>
       </div>
     </div>
