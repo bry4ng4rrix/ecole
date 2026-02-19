@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import {
   LogOut, User, BookOpen, BarChart3, Clock, FileText,
-  MessageSquare, Menu, X, Download, Eye, Bell, Home, Calendar, AlertCircle
+  MessageSquare, Menu, X, Download, Eye, Bell, Home, Calendar, AlertCircle, TrendingUp, Award
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,10 +14,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import {
+  mockStudents, mockGrades, mockAttendance, mockAnnouncements, mockSchedule,
+  getStudentGrades, getStudentAttendance
+} from '@/data/mockData'
 
 function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('home')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  // Mock current student - using first student from mock data
+  const currentStudent = mockStudents[0] || {
+    id: 'STU001',
+    firstName: 'Jean',
+    lastName: 'Dupont',
+    email: 'jean.dupont@lycee.mg',
+    class: '2nde A',
+    averageGrade: 15.5,
+    absences: 3,
+    tardiness: 1
+  }
+  const studentGrades = getStudentGrades(currentStudent.id)
+  const studentAttendance = getStudentAttendance(currentStudent.id)
 
   const menuItems = [
     { id: 'home', label: 'Tableau de bord', icon: Home },
@@ -129,13 +146,13 @@ function StudentDashboard() {
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {activeTab === 'home' && <StudentDashboardOverview />}
-            {activeTab === 'profil' && <StudentProfile />}
-            {activeTab === 'academique' && <AcademicManagement />}
-            {activeTab === 'notes' && <GradesResults />}
-            {activeTab === 'presence' && <AttendanceTracking />}
+            {activeTab === 'home' && <StudentDashboardOverview currentStudent={currentStudent} studentGrades={studentGrades} mockAnnouncements={mockAnnouncements} mockSchedule={mockSchedule} />}
+            {activeTab === 'profil' && <StudentProfile currentStudent={currentStudent} />}
+            {activeTab === 'academique' && <AcademicManagement mockSchedule={mockSchedule} />}
+            {activeTab === 'notes' && <GradesResults studentGrades={studentGrades} />}
+            {activeTab === 'presence' && <AttendanceTracking studentAttendance={studentAttendance} />}
             {activeTab === 'admin' && <AdministrativeStatus />}
-            {activeTab === 'communication' && <Communications />}
+            {activeTab === 'communication' && <Communications mockAnnouncements={mockAnnouncements} />}
             {activeTab === 'documents' && <MyDocuments />}
           </div>
         </main>
@@ -145,61 +162,69 @@ function StudentDashboard() {
 }
 
 // ============ DASHBOARD OVERVIEW ============
-function StudentDashboardOverview() {
+function StudentDashboardOverview({ currentStudent, studentGrades, mockAnnouncements, mockSchedule }) {
+  const avgBySubject = {}
+  studentGrades.forEach(g => {
+    if (!avgBySubject[g.subject]) avgBySubject[g.subject] = []
+    avgBySubject[g.subject].push(g.grade)
+  })
+
+  const subjectAverages = Object.entries(avgBySubject).map(([subject, grades]) => ({
+    subject,
+    average: (grades.reduce((a, b) => a + b, 0) / grades.length).toFixed(1)
+  }))
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Tableau de bord</h1>
-        <p className="text-muted-foreground mt-1">Bienvenue sur votre portail étudiant sécurisé</p>
+        <p className="text-muted-foreground mt-1">Bienvenue {currentStudent.firstName}, consultez vos informations académiques</p>
       </div>
 
       {/* Key Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <InfoCard title="Classe" value="2nde C" icon={BookOpen} />
-        <InfoCard title="Moyenne générale" value="12.8/20" icon={BarChart3} />
-        <InfoCard title="Taux présence" value="94.5%" icon={Clock} />
-        <InfoCard title="Paiements" value="À jour" icon={FileText} status="good" />
+        <InfoCard title="Classe" value={currentStudent.class} icon={BookOpen} />
+        <InfoCard title="Moyenne générale" value={`${currentStudent.averageGrade}/20`} icon={Award} />
+        <InfoCard title="Absences" value={currentStudent.absences} icon={AlertCircle} />
+        <InfoCard title="Retards" value={currentStudent.tardiness} icon={Clock} />
       </div>
 
       {/* Quick Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h2 className="text-xl font-bold mb-4">Mes matières</h2>
-          <div className="space-y-3">
-            {[
-              { name: 'Mathématiques', prof: 'M. Dupont', avg: 14.5 },
-              { name: 'Français', prof: 'Mme Martin', avg: 12.0 },
-              { name: 'Anglais', prof: 'M. Johnson', avg: 13.5 }
-            ].map((subject, i) => (
+        <Card>
+          <CardHeader>
+            <CardTitle>Moyennes par matière</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {subjectAverages.length > 0 ? subjectAverages.map((item, i) => (
               <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div>
-                  <p className="font-semibold text-sm">{subject.name}</p>
-                  <p className="text-xs text-muted-foreground">{subject.prof}</p>
-                </div>
-                <p className="font-bold text-primary">{subject.avg}</p>
+                <p className="font-semibold text-sm">{item.subject}</p>
+                <Badge variant={item.average >= 15 ? 'default' : item.average >= 10 ? 'secondary' : 'destructive'}>
+                  {item.average}/20
+                </Badge>
               </div>
-            ))}
-          </div>
-        </div>
+            )) : (
+              <p className="text-sm text-muted-foreground">Aucune note enregistrée</p>
+            )}
+          </CardContent>
+        </Card>
 
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h2 className="text-xl font-bold mb-4">Annonces récentes</h2>
-          <div className="space-y-3">
-            {[
-              { message: 'Réunion parents-profs mercredi', date: "Aujourd'hui" },
-              { message: 'Bulletins validés pour T2', date: 'Il y a 2j' },
-              { message: 'Fermeture établissement 25 jan', date: 'Il y a 3j' }
-            ].map((annonce, i) => (
+        <Card>
+          <CardHeader>
+            <CardTitle>Annonces récentes</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {mockAnnouncements.slice(0, 3).map((ann, i) => (
               <div key={i} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                 <Bell className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium text-sm">{annonce.message}</p>
-                  <p className="text-xs text-muted-foreground">{annonce.date}</p>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">{ann.title}</p>
+                  <p className="text-xs text-muted-foreground">{ann.date}</p>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
