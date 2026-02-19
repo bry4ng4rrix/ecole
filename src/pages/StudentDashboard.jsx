@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import {
   LogOut, User, BookOpen, BarChart3, Clock, FileText,
-  MessageSquare, Menu, X, Download, Eye, Bell, Home, Calendar, AlertCircle
+  MessageSquare, Menu, X, Download, Eye, Bell, Home, Calendar, AlertCircle, TrendingUp, Award
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,10 +14,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import {
+  mockStudents, mockGrades, mockAttendance, mockAnnouncements, mockSchedule,
+  getStudentGrades, getStudentAttendance
+} from '@/data/mockData'
 
 function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('home')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  // Mock current student - using first student from mock data
+  const currentStudent = mockStudents[0] || {
+    id: 'STU001',
+    firstName: 'Jean',
+    lastName: 'Dupont',
+    email: 'jean.dupont@lycee.mg',
+    class: '2nde A',
+    averageGrade: 15.5,
+    absences: 3,
+    tardiness: 1
+  }
+  const studentGrades = getStudentGrades(currentStudent.id)
+  const studentAttendance = getStudentAttendance(currentStudent.id)
 
   const menuItems = [
     { id: 'home', label: 'Tableau de bord', icon: Home },
@@ -55,17 +72,21 @@ function StudentDashboard() {
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col">
-      <div className="p-6 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground">Menu Étudiant</h2>
+      <div className="p-6 border-b border-sidebar-border bg-sidebar-primary">
+        <h2 className="text-lg font-semibold text-sidebar-primary-foreground">Menu Étudiant</h2>
       </div>
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-4 space-y-1">
         {menuItems.map(item => {
           const Icon = item.icon
           return (
             <Button
               key={item.id}
               variant={activeTab === item.id ? "default" : "ghost"}
-              className="w-full justify-start"
+              className={`w-full justify-start transition-all ${
+                activeTab === item.id
+                  ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent'
+              }`}
               onClick={() => setActiveTab(item.id)}
             >
               <Icon className="w-4 h-4 mr-3" />
@@ -80,12 +101,12 @@ function StudentDashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-20">
+      <header className="bg-gradient-to-r from-primary to-accent border-b border-border sticky top-0 z-20 shadow-md">
         <div className="flex justify-between items-center px-6 py-4">
           <div className="flex items-center gap-4">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="md:hidden">
+                <Button variant="ghost" size="sm" className="md:hidden text-primary-foreground hover:bg-white/20">
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
@@ -94,12 +115,12 @@ function StudentDashboard() {
               </SheetContent>
             </Sheet>
             <div>
-              <h1 className="text-2xl font-bold text-primary">SIG-Lycée Étudiant</h1>
-              <p className="text-xs text-muted-foreground">Portail Étudiant Sécurisé</p>
+              <h1 className="text-2xl font-bold text-primary-foreground">SIG-Lycée Étudiant</h1>
+              <p className="text-xs text-primary-foreground/80">Portail Étudiant Sécurisé</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="relative">
+            <Button variant="ghost" size="sm" className="relative text-primary-foreground hover:bg-white/20">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
             </Button>
@@ -107,7 +128,7 @@ function StudentDashboard() {
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="text-destructive hover:text-destructive"
+              className="text-primary-foreground hover:bg-white/20"
             >
               <LogOut className="w-5 h-5" />
               <span className="hidden sm:inline ml-2">Déconnexion</span>
@@ -118,20 +139,20 @@ function StudentDashboard() {
 
       <div className="flex">
         {/* Sidebar desktop */}
-        <aside className="hidden md:block w-64 bg-card border-r border-border">
+        <aside className="hidden md:block w-64 bg-sidebar border-r border-sidebar-border shadow-lg">
           <SidebarContent />
         </aside>
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {activeTab === 'home' && <StudentDashboardOverview />}
-            {activeTab === 'profil' && <StudentProfile />}
-            {activeTab === 'academique' && <AcademicManagement />}
-            {activeTab === 'notes' && <GradesResults />}
-            {activeTab === 'presence' && <AttendanceTracking />}
+            {activeTab === 'home' && <StudentDashboardOverview currentStudent={currentStudent} studentGrades={studentGrades} mockAnnouncements={mockAnnouncements} mockSchedule={mockSchedule} />}
+            {activeTab === 'profil' && <StudentProfile currentStudent={currentStudent} />}
+            {activeTab === 'academique' && <AcademicManagement mockSchedule={mockSchedule} />}
+            {activeTab === 'notes' && <GradesResults studentGrades={studentGrades} />}
+            {activeTab === 'presence' && <AttendanceTracking studentAttendance={studentAttendance} />}
             {activeTab === 'admin' && <AdministrativeStatus />}
-            {activeTab === 'communication' && <Communications />}
+            {activeTab === 'communication' && <Communications mockAnnouncements={mockAnnouncements} />}
             {activeTab === 'documents' && <MyDocuments />}
           </div>
         </main>
@@ -141,61 +162,69 @@ function StudentDashboard() {
 }
 
 // ============ DASHBOARD OVERVIEW ============
-function StudentDashboardOverview() {
+function StudentDashboardOverview({ currentStudent, studentGrades, mockAnnouncements, mockSchedule }) {
+  const avgBySubject = {}
+  studentGrades.forEach(g => {
+    if (!avgBySubject[g.subject]) avgBySubject[g.subject] = []
+    avgBySubject[g.subject].push(g.grade)
+  })
+
+  const subjectAverages = Object.entries(avgBySubject).map(([subject, grades]) => ({
+    subject,
+    average: (grades.reduce((a, b) => a + b, 0) / grades.length).toFixed(1)
+  }))
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Tableau de bord</h1>
-        <p className="text-muted-foreground mt-1">Bienvenue sur votre portail étudiant sécurisé</p>
+        <p className="text-muted-foreground mt-1">Bienvenue {currentStudent.firstName}, consultez vos informations académiques</p>
       </div>
 
       {/* Key Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <InfoCard title="Classe" value="2nde C" icon={BookOpen} />
-        <InfoCard title="Moyenne générale" value="12.8/20" icon={BarChart3} />
-        <InfoCard title="Taux présence" value="94.5%" icon={Clock} />
-        <InfoCard title="Paiements" value="À jour" icon={FileText} status="good" />
+        <InfoCard title="Classe" value={currentStudent.class} icon={BookOpen} />
+        <InfoCard title="Moyenne générale" value={`${currentStudent.averageGrade}/20`} icon={Award} />
+        <InfoCard title="Absences" value={currentStudent.absences} icon={AlertCircle} />
+        <InfoCard title="Retards" value={currentStudent.tardiness} icon={Clock} />
       </div>
 
       {/* Quick Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h2 className="text-xl font-bold mb-4">Mes matières</h2>
-          <div className="space-y-3">
-            {[
-              { name: 'Mathématiques', prof: 'M. Dupont', avg: 14.5 },
-              { name: 'Français', prof: 'Mme Martin', avg: 12.0 },
-              { name: 'Anglais', prof: 'M. Johnson', avg: 13.5 }
-            ].map((subject, i) => (
+        <Card>
+          <CardHeader>
+            <CardTitle>Moyennes par matière</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {subjectAverages.length > 0 ? subjectAverages.map((item, i) => (
               <div key={i} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div>
-                  <p className="font-semibold text-sm">{subject.name}</p>
-                  <p className="text-xs text-muted-foreground">{subject.prof}</p>
-                </div>
-                <p className="font-bold text-primary">{subject.avg}</p>
+                <p className="font-semibold text-sm">{item.subject}</p>
+                <Badge variant={item.average >= 15 ? 'default' : item.average >= 10 ? 'secondary' : 'destructive'}>
+                  {item.average}/20
+                </Badge>
               </div>
-            ))}
-          </div>
-        </div>
+            )) : (
+              <p className="text-sm text-muted-foreground">Aucune note enregistrée</p>
+            )}
+          </CardContent>
+        </Card>
 
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h2 className="text-xl font-bold mb-4">Annonces récentes</h2>
-          <div className="space-y-3">
-            {[
-              { message: 'Réunion parents-profs mercredi', date: "Aujourd'hui" },
-              { message: 'Bulletins validés pour T2', date: 'Il y a 2j' },
-              { message: 'Fermeture établissement 25 jan', date: 'Il y a 3j' }
-            ].map((annonce, i) => (
+        <Card>
+          <CardHeader>
+            <CardTitle>Annonces récentes</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {mockAnnouncements.slice(0, 3).map((ann, i) => (
               <div key={i} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                 <Bell className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium text-sm">{annonce.message}</p>
-                  <p className="text-xs text-muted-foreground">{annonce.date}</p>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">{ann.title}</p>
+                  <p className="text-xs text-muted-foreground">{ann.date}</p>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
@@ -218,93 +247,76 @@ function InfoCard({ title, value, icon: Icon, status }) {
 }
 
 // ============ STUDENT PROFILE ============
-function StudentProfile() {
+function StudentProfile({ currentStudent }) {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Mon Profil</h1>
-        <p className="text-muted-foreground mt-1">Consultation de vos informations personnelles et académiques</p>
+        <p className="text-muted-foreground mt-1">Informations personnelles et académiques</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Profile Card */}
-        <div className="lg:col-span-1 bg-card rounded-lg border border-border p-6">
-          <div className="flex flex-col items-center">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <User className="w-10 h-10 text-primary" />
-            </div>
-            <h2 className="text-xl font-bold">Jean Dupont</h2>
-            <p className="text-sm text-muted-foreground">Étudiant</p>
-            <div className="mt-6 space-y-2 w-full text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Matricule:</span>
-                <span className="font-semibold">24-001</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Classe:</span>
-                <span className="font-semibold">2nde C</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Filière:</span>
-                <span className="font-semibold">Générale</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Details */}
-        <div className="lg:col-span-2 bg-card rounded-lg border border-border p-6">
-          <h2 className="text-lg font-bold mb-6">Informations personnelles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Prénom</p>
-              <p className="font-semibold">Jean</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Nom</p>
-              <p className="font-semibold">Dupont</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Email</p>
-              <p className="font-semibold">jean.dupont@lycee.ma</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Téléphone</p>
-              <p className="font-semibold">+261 32 XX XX XX</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Date d'inscription</p>
-              <p className="font-semibold">01/09/2024</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Statut</p>
-              <span className="px-3 py-1 bg-green-500/20 text-green-600 text-xs rounded-full font-medium">Actif</span>
-            </div>
+      {/* Profile Card */}
+      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg p-8 shadow-lg">
+        <div className="flex items-center gap-4 mb-6">
+          <Avatar className="h-16 w-16 border-2 border-primary-foreground">
+            <AvatarFallback className="text-2xl">{currentStudent?.firstName?.[0]}{currentStudent?.lastName?.[0]}</AvatarFallback>
+          </Avatar>
+          <div>
+            <h2 className="text-2xl font-bold">{currentStudent?.firstName} {currentStudent?.lastName}</h2>
+            <p className="text-primary-foreground/80">Classe: {currentStudent?.class}</p>
           </div>
         </div>
       </div>
 
-      {/* Academic History */}
-      <div className="bg-card rounded-lg border border-border p-6">
-        <h2 className="text-lg font-bold mb-4">Historique académique</h2>
-        <div className="space-y-3">
-          {[
-            { year: '2023-2024', class: '3ème', avg: 11.5, status: 'Admis' },
-            { year: '2024-2025', class: '2nde C', avg: 12.8, status: 'En cours' }
-          ].map((record, i) => (
-            <div key={i} className="flex justify-between items-center p-4 bg-muted rounded-lg">
-              <div>
-                <p className="font-semibold">{record.year} - {record.class}</p>
-                <p className="text-sm text-muted-foreground">Moyenne: {record.avg}/20</p>
-              </div>
-              <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                record.status === 'Admis' ? 'bg-green-500/20 text-green-600' : 'bg-blue-500/20 text-blue-600'
-              }`}>
-                {record.status}
-              </span>
+      {/* Personal Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Informations personnelles</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Email</p>
+              <p className="font-medium">{currentStudent?.email}</p>
             </div>
-          ))}
-        </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Téléphone</p>
+              <p className="font-medium">{currentStudent?.phone}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Date de naissance</p>
+              <p className="font-medium">{currentStudent?.dateOfBirth}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Adresse</p>
+              <p className="font-medium">{currentStudent?.address}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Informations académiques</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Classe</p>
+              <p className="font-medium">{currentStudent?.class}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Moyenne générale</p>
+              <p className="font-medium">{currentStudent?.averageGrade}/20</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Absences</p>
+              <p className="font-medium">{currentStudent?.absences}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">ID Étudiant</p>
+              <p className="font-medium font-mono">{currentStudent?.id}</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

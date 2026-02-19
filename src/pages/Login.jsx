@@ -77,27 +77,27 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 dark:from-slate-950 dark:to-blue-950 flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md md:max-w-lg">
         {/* Header / Logo */}
         <div className="text-center mb-8 md:mb-10">
           <div className="inline-flex items-center justify-center gap-3 mb-4">
-            <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-2xl shadow-lg">
               <BookOpen className="w-10 h-10 md:w-12 md:h-12 text-white" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
               SIG-Lycée
             </h1>
           </div>
-          <p className="text-indigo-200 text-base md:text-lg font-medium">
+          <p className="text-muted-foreground text-base md:text-lg font-medium">
             Système de Gestion Scolaire
           </p>
         </div>
 
         {/* Card principale */}
-        <Card className="bg-white/95 backdrop-blur-md border-white/10 shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-center">Connexion</CardTitle>
+        <Card className="shadow-xl border-border/50">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-center text-2xl">Connexion</CardTitle>
             <CardDescription className="text-center">
               Accédez à votre espace personnel
             </CardDescription>
@@ -117,11 +117,15 @@ function Login() {
                     key={opt.value}
                     type="button"
                     variant={role === opt.value ? "default" : "outline"}
-                    className="h-auto py-3"
+                    className={`h-auto py-3 transition-all ${
+                      role === opt.value
+                        ? 'bg-primary text-primary-foreground shadow-md'
+                        : 'border-border hover:bg-secondary'
+                    }`}
                     onClick={() => setRole(opt.value)}
                   >
                     <opt.icon className="w-4 h-4 mr-2" />
-                    {opt.label}
+                    <span className="font-medium">{opt.label}</span>
                   </Button>
                 ))}
               </div>
@@ -129,36 +133,36 @@ function Login() {
 
             {/* Message d'erreur */}
             {error && (
-              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm font-medium">
                 {error}
               </div>
             )}
 
             {/* Formulaire */}
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email / Identifiant</Label>
+                <Label htmlFor="email" className="font-medium">Email / Identifiant</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
                     value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value)
-                    setError('')
-                  }}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setError('')
+                    }}
                     placeholder="exemple@lycee.mg"
                     autoComplete="email"
                     required
-                    className="pl-11"
+                    className="pl-10 h-10"
                   />
                 </div>
               </div>
 
               {/* Mot de passe */}
               <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
+                <Label htmlFor="password" className="font-medium">Mot de passe</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -172,7 +176,7 @@ function Login() {
                     placeholder="••••••••"
                     autoComplete="current-password"
                     required
-                    className="pl-11"
+                    className="pl-10 h-10"
                   />
                 </div>
               </div>
@@ -183,11 +187,11 @@ function Login() {
                   <input
                     type="checkbox"
                     id="remember"
-                    className="rounded border-gray-300"
+                    className="rounded border-border cursor-pointer"
                   />
-                  <Label htmlFor="remember" className="text-muted-foreground">Se souvenir de moi</Label>
+                  <Label htmlFor="remember" className="text-muted-foreground cursor-pointer">Se souvenir de moi</Label>
                 </div>
-                <a href="#" className="text-primary hover:underline">
+                <a href="#" className="text-primary hover:text-primary/90 font-medium transition-colors">
                   Mot de passe oublié ?
                 </a>
               </div>
@@ -196,7 +200,7 @@ function Login() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full"
+                className="w-full h-11 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
               >
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 {loading ? 'Connexion en cours...' : 'Se connecter'}
@@ -206,7 +210,7 @@ function Login() {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-indigo-200/80 text-sm mt-8">
+        <p className="text-center text-muted-foreground text-sm mt-8">
           © {new Date().getFullYear()} SIG-Lycée • Tous droits réservés
         </p>
       </div>

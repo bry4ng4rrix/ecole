@@ -31,17 +31,17 @@ function ParentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+      <header className="bg-gradient-to-r from-primary to-accent border-b border-border sticky top-0 z-10 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-blue-600">SIG-Lycée</h1>
-            <p className="text-sm text-gray-600">Espace Parent</p>
+            <h1 className="text-2xl font-bold text-primary-foreground">SIG-Lycée</h1>
+            <p className="text-sm text-primary-foreground/80">Espace Parent</p>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-primary-foreground hover:bg-white/20 rounded-lg transition-colors"
           >
             <LogOut className="w-5 h-5" />
             Déconnexion
@@ -51,8 +51,8 @@ function ParentDashboard() {
 
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-md overflow-y-auto hidden md:block">
-          <nav className="p-6 space-y-2">
+        <aside className="w-64 bg-sidebar border-r border-sidebar-border overflow-y-auto hidden md:block shadow-lg">
+          <nav className="p-6 space-y-1">
             {[
               { id: 'home', label: 'Accueil', icon: FileText },
               { id: 'enfants', label: 'Mes Enfants', icon: TrendingUp },
@@ -65,10 +65,10 @@ function ParentDashboard() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium ${
                     activeTab === item.id
-                      ? 'bg-blue-100 text-blue-600 font-semibold'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -83,9 +83,9 @@ function ParentDashboard() {
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Parent Info */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-6 mb-8 shadow-lg">
+            <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg p-6 mb-8 shadow-lg">
               <h2 className="text-3xl font-bold mb-2">Bienvenue, {parent.name}</h2>
-              <p className="text-blue-100">{parent.email}</p>
+              <p className="text-primary-foreground/90">{parent.email}</p>
             </div>
 
             {/* Content Based on Tab */}
