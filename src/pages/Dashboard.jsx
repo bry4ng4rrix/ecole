@@ -80,7 +80,7 @@ function Dashboard() {
 
   const DashboardCard = ({ icon: Icon, title, value, color, status }) => (
     <Card>
-      <CardContent className="p-6">
+      <CardContent className="p-1">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">{title}</p>
