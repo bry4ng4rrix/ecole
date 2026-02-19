@@ -477,6 +477,108 @@ export const mockBulletins = [
   },
 ];
 
+export const mockSMSMessages = [
+  {
+    id: 'SMS001',
+    recipient: 'STU001',
+    recipientPhone: '+261 32 12 34 567',
+    message: 'Bulletin disponible: Votre fils a obtenu une moyenne de 15.5/20 ce trimestre.',
+    sender: 'Admin',
+    date: '2025-01-20',
+    time: '14:30',
+    status: 'sent',
+    type: 'bulletin'
+  },
+  {
+    id: 'SMS002',
+    recipient: 'STU002',
+    recipientPhone: '+261 32 98 76 543',
+    message: 'Absent: Votre absence en cours de Français a été enregistrée.',
+    sender: 'System',
+    date: '2025-01-20',
+    time: '10:15',
+    status: 'sent',
+    type: 'attendance'
+  },
+  {
+    id: 'SMS003',
+    recipient: 'STU003',
+    recipientPhone: '+261 34 55 66 777',
+    message: 'Paiement: Merci pour votre paiement des frais de janvier. Montant: 450,000 Ar',
+    sender: 'Finance',
+    date: '2025-01-19',
+    time: '16:45',
+    status: 'sent',
+    type: 'payment'
+  },
+  {
+    id: 'SMS004',
+    recipient: 'STU004',
+    recipientPhone: '+261 33 22 11 888',
+    message: 'Réunion: Réunion parents-profs le 25 janvier à 18h. Veuillez confirmer votre présence.',
+    sender: 'Direction',
+    date: '2025-01-18',
+    time: '09:00',
+    status: 'sent',
+    type: 'event'
+  },
+  {
+    id: 'SMS005',
+    recipient: 'STU005',
+    recipientPhone: '+261 32 44 55 666',
+    message: 'Annonce: Fermeture de l\'établissement le 25 janvier pour journée pédagogique.',
+    sender: 'Admin',
+    date: '2025-01-17',
+    time: '11:20',
+    status: 'sent',
+    type: 'announcement'
+  },
+  {
+    id: 'SMS006',
+    recipient: 'PARENT001',
+    recipientPhone: '+261 32 12 34 567',
+    message: 'Grades: Nouvelle note enregistrée - Mathématiques 16.5/20. Très bon travail!',
+    sender: 'System',
+    date: '2025-01-20',
+    time: '15:30',
+    status: 'sent',
+    type: 'grades'
+  }
+];
+
+export const mockSMSTemplates = [
+  {
+    id: 'TEMPLATE001',
+    name: 'Bulletin disponible',
+    message: 'Bulletin disponible: Votre enfant a obtenu une moyenne de {average}/20 ce trimestre.',
+    type: 'bulletin'
+  },
+  {
+    id: 'TEMPLATE002',
+    name: 'Absence enregistrée',
+    message: 'Absence: Votre enfant a été absent du cours de {subject} le {date}.',
+    type: 'attendance'
+  },
+  {
+    id: 'TEMPLATE003',
+    name: 'Paiement reçu',
+    message: 'Paiement reçu: Merci pour le paiement de {amount} Ar. Date: {date}',
+    type: 'payment'
+  },
+  {
+    id: 'TEMPLATE004',
+    name: 'Nouvelle note',
+    message: 'Nouvelle note: {subject} - {grade}/20 ({comment})',
+    type: 'grades'
+  },
+  {
+    id: 'TEMPLATE005',
+    name: 'Événement important',
+    message: 'Événement: {event_name} le {date} à {time}. Veuillez confirmer.',
+    type: 'event'
+  }
+];
+
 // Utility functions
 export const getStudentById = (id) => mockStudents.find(s => s.id === id);
 export const getTeacherById = (id) => mockTeachers.find(t => t.id === id);
@@ -487,3 +589,17 @@ export const getTeacherClasses = (teacherId) => {
   const teacher = getTeacherById(teacherId);
   return teacher ? teacher.classes : [];
 };
+export const getSMSMessages = (recipientId) => mockSMSMessages.filter(m => m.recipient === recipientId);
+export const getSMSStats = () => ({
+  total: mockSMSMessages.length,
+  sent: mockSMSMessages.filter(m => m.status === 'sent').length,
+  failed: mockSMSMessages.filter(m => m.status === 'failed').length,
+  byType: {
+    bulletin: mockSMSMessages.filter(m => m.type === 'bulletin').length,
+    attendance: mockSMSMessages.filter(m => m.type === 'attendance').length,
+    payment: mockSMSMessages.filter(m => m.type === 'payment').length,
+    grades: mockSMSMessages.filter(m => m.type === 'grades').length,
+    event: mockSMSMessages.filter(m => m.type === 'event').length,
+    announcement: mockSMSMessages.filter(m => m.type === 'announcement').length
+  }
+});

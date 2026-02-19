@@ -73,6 +73,18 @@ function AdminDashboard() {
   )
 
   const Communication = () => {
+    const [commSubTab, setCommSubTab] = useState('annonces')
+    const [mockSMSMessages, setMockSMSMessages] = useState(() => {
+      // Import from mockData equivalent
+      return [
+        { id: 'SMS001', recipient: 'STU001', recipientPhone: '+261 32 12 34 567', message: 'Bulletin disponible: Votre fils a obtenu une moyenne de 15.5/20 ce trimestre.', sender: 'Admin', date: '2025-01-20', time: '14:30', status: 'sent', type: 'bulletin' },
+        { id: 'SMS002', recipient: 'STU002', recipientPhone: '+261 32 98 76 543', message: 'Absent: Votre absence en cours de Français a été enregistrée.', sender: 'System', date: '2025-01-20', time: '10:15', status: 'sent', type: 'attendance' },
+        { id: 'SMS003', recipient: 'STU003', recipientPhone: '+261 34 55 66 777', message: 'Paiement: Merci pour votre paiement des frais de janvier. Montant: 450,000 Ar', sender: 'Finance', date: '2025-01-19', time: '16:45', status: 'sent', type: 'payment' },
+        { id: 'SMS004', recipient: 'STU004', recipientPhone: '+261 33 22 11 888', message: 'Réunion: Réunion parents-profs le 25 janvier à 18h. Veuillez confirmer votre présence.', sender: 'Direction', date: '2025-01-18', time: '09:00', status: 'sent', type: 'event' },
+        { id: 'SMS005', recipient: 'STU005', recipientPhone: '+261 32 44 55 666', message: 'Annonce: Fermeture de l\'établissement le 25 janvier pour journée pédagogique.', sender: 'Admin', date: '2025-01-17', time: '11:20', status: 'sent', type: 'announcement' }
+      ]
+    })
+
     const handleAddAnnouncement = (data) => {
       const newAnnouncement = {
         id: `ANN${String(announcements.length + 1).padStart(3, '0')}`,
@@ -111,36 +123,57 @@ function AdminDashboard() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Communication</h1>
-            <p className="text-muted-foreground mt-1">Gestion des annonces et notifications ({announcements.length} annonces)</p>
+            <p className="text-muted-foreground mt-1">Gestion des annonces, SMS et notifications</p>
           </div>
-          <Button
-            onClick={() => setAnnouncementModal({ open: true, data: null })}
-            variant="default"
-          >
-            <Plus className="w-4 h-4 mr-2" /> Nouvelle annonce
-          </Button>
+          {commSubTab === 'annonces' && (
+            <Button
+              onClick={() => setAnnouncementModal({ open: true, data: null })}
+              variant="default"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Nouvelle annonce
+            </Button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-sm text-muted-foreground">Total annonces</p>
-              <p className="text-3xl font-bold mt-2">{announcements.length}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-sm text-muted-foreground">Priorité haute</p>
-              <p className="text-3xl font-bold mt-2">{announcements.filter(a => a.priority === 'high').length}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-sm text-muted-foreground">Visibilité globale</p>
-              <p className="text-3xl font-bold mt-2">{announcements.filter(a => a.visibility === 'all').length}</p>
-            </CardContent>
-          </Card>
+        <div className="flex gap-2 border-b border-border">
+          {[
+            { id: 'annonces', label: 'Annonces' },
+            { id: 'sms', label: 'SMS' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setCommSubTab(tab.id)}
+              className={`px-4 py-2 font-medium border-b-2 ${
+                commSubTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {commSubTab === 'annonces' && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">Total annonces</p>
+                  <p className="text-3xl font-bold mt-2">{announcements.length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">Priorité haute</p>
+                  <p className="text-3xl font-bold mt-2">{announcements.filter(a => a.priority === 'high').length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">Visibilité globale</p>
+                  <p className="text-3xl font-bold mt-2">{announcements.filter(a => a.visibility === 'all').length}</p>
+                </CardContent>
+              </Card>
+            </div>
 
         <Card>
           <CardHeader>
@@ -205,6 +238,80 @@ function AdminDashboard() {
           data={detailModal.data}
           fields={detailModal.fields}
         />
+          </>
+        )}
+
+        {commSubTab === 'sms' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">Total SMS</p>
+                  <p className="text-3xl font-bold mt-2">{mockSMSMessages.length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">Envoyés</p>
+                  <p className="text-3xl font-bold mt-2 text-green-600">{mockSMSMessages.filter(m => m.status === 'sent').length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">En erreur</p>
+                  <p className="text-3xl font-bold mt-2 text-destructive">{mockSMSMessages.filter(m => m.status === 'failed').length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">Paiements</p>
+                  <p className="text-3xl font-bold mt-2">{mockSMSMessages.filter(m => m.type === 'payment').length}</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle>Messages SMS récents</CardTitle>
+                <Button size="sm" variant="outline">
+                  <Plus className="w-4 h-4 mr-2" /> Envoyer SMS
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {mockSMSMessages.slice(0, 10).map(sms => (
+                    <div key={sms.id} className="border border-border rounded-lg p-4 hover:bg-muted/30 transition">
+                      <div className="flex justify-between items-start gap-4 mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <p className="font-semibold text-sm">{students.find(s => s.id === sms.recipient)?.firstName || 'Contact'}</p>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                              {sms.type === 'bulletin' && 'Bulletin'}
+                              {sms.type === 'attendance' && 'Absence'}
+                              {sms.type === 'payment' && 'Paiement'}
+                              {sms.type === 'grades' && 'Notes'}
+                              {sms.type === 'event' && 'Événement'}
+                              {sms.type === 'announcement' && 'Annonce'}
+                            </span>
+                            <Badge className={sms.status === 'sent' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}>
+                              {sms.status === 'sent' ? 'Envoyé' : 'Erreur'}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{sms.recipientPhone}</p>
+                          <p className="text-sm text-foreground">{sms.message}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-muted-foreground">{sms.date}</p>
+                          <p className="text-xs text-muted-foreground">{sms.time}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     )
   }
@@ -918,100 +1025,7 @@ function AdminDashboard() {
     )
   }
 
-  const AttendanceAbsence = () => (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Présence & Absences</h1>
-        <p className="text-muted-foreground mt-1">Suivi et justification des absences</p>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="bg-card rounded-lg border border-border p-6">
-          <p className="text-sm text-muted-foreground">Taux présence général</p>
-          <p className="text-3xl font-bold mt-2">94.5%</p>
-          <p className="text-xs text-green-600 mt-2">Excellent</p>
-        </div>
-        <div className="bg-card rounded-lg border border-border p-6">
-          <p className="text-sm text-muted-foreground">Absences cette semaine</p>
-          <p className="text-3xl font-bold mt-2">23</p>
-          <p className="text-xs text-muted-foreground mt-2">À justifier</p>
-        </div>
-        <div className="bg-card rounded-lg border border-border p-6">
-          <p className="text-sm text-muted-foreground">Justifications en attente</p>
-          <p className="text-3xl font-bold mt-2">8</p>
-          <p className="text-xs text-orange-600 mt-2">À valider</p>
-        </div>
-      </div>
-
-      <div className="bg-card rounded-lg border border-border p-6">
-        <h2 className="text-xl font-bold mb-4">Justifications en attente</h2>
-        <div className="space-y-3">
-          {[
-            { student: 'Jean Dupont', date: '2026-01-20', raison: 'Maladie' },
-            { student: 'Marie Jean', date: '2026-01-19', raison: 'RDV médical' }
-          ].map((item, i) => (
-            <div key={i} className="border border-border rounded-lg p-4">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <p className="font-semibold">{item.student}</p>
-                  <p className="text-sm text-muted-foreground">{item.date} - {item.raison}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button className="px-3 py-1 bg-green-500/20 text-green-600 rounded text-sm font-medium hover:bg-green-500/30">Valider</button>
-                  <button className="px-3 py-1 bg-red-500/20 text-red-600 rounded text-sm font-medium hover:bg-red-500/30">Rejeter</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-
-  const AdministrativeManagement = () => {
-    const [activeSubTab, setActiveSubTab] = useState('paiements')
-
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Gestion Administrative</h1>
-          <p className="text-muted-foreground mt-1">Paiements, documents et utilisateurs</p>
-        </div>
-
-        <div className="flex gap-2 border-b border-border">
-          {['paiements', 'documents', 'utilisateurs'].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveSubTab(tab)}
-              className={`px-4 py-2 font-medium border-b-2 ${
-                activeSubTab === tab ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'
-              }`}
-            >
-              {tab === 'paiements' && 'Paiements'}
-              {tab === 'documents' && 'Documents'}
-              {tab === 'utilisateurs' && 'Utilisateurs'}
-            </button>
-          ))}
-        </div>
-
-        {activeSubTab === 'paiements' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="bg-card rounded-lg border border-border p-6">
-                <p className="text-sm text-muted-foreground">Revenus collectés</p>
-                <p className="text-3xl font-bold mt-2">15.2M Ar</p>
-              </div>
-              <div className="bg-card rounded-lg border border-border p-6">
-                <p className="text-sm text-muted-foreground">Dettes totales</p>
-                <p className="text-3xl font-bold mt-2 text-destructive">2.8M Ar</p>
-              </div>
-              <div className="bg-card rounded-lg border border-border p-6">
-                <p className="text-sm text-muted-foreground">Taux recouvrement</p>
-                <p className="text-3xl font-bold mt-2">84.5%</p>
-              </div>
-            </div>
-            <div className="bg-card rounded-lg border border-border p-6">
-              <h2 className="text-xl font-bold mb-4">Élèves avec dettes</h2>
               <div className="space-y-2">
                 {[
                   { name: 'Jean Paul', montant: 250000 },
@@ -1078,72 +1092,7 @@ function AdminDashboard() {
     )
   }
 
-  const Communication = () => {
-    const [activeSubTab, setActiveSubTab] = useState('notifications')
 
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Communication</h1>
-          <p className="text-muted-foreground mt-1">Notifications, messagerie et emails</p>
-        </div>
-
-        <div className="flex gap-2 border-b border-border">
-          {['notifications', 'messagerie', 'emails'].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveSubTab(tab)}
-              className={`px-4 py-2 font-medium border-b-2 ${
-                activeSubTab === tab ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'
-              }`}
-            >
-              {tab === 'notifications' && 'Notifications'}
-              {tab === 'messagerie' && 'Messagerie'}
-              {tab === 'emails' && 'Templates Emails'}
-            </button>
-          ))}
-        </div>
-
-        {activeSubTab === 'notifications' && (
-          <div className="space-y-4">
-            <button className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-medium flex items-center gap-2 justify-center">
-              <Plus className="w-4 h-4" /> Nouvelle notification
-            </button>
-            <div className="space-y-3">
-              {['Annonce: Fermeture le 25 jan', 'Rappel: Paiement des frais', 'Conseil de classe demain'].map((notif, i) => (
-                <div key={i} className="bg-card rounded-lg border border-border p-4 flex justify-between items-center">
-                  <p className="font-medium">{notif}</p>
-                  <button className="text-destructive text-sm hover:underline">Supprimer</button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeSubTab === 'messagerie' && (
-          <div className="bg-card rounded-lg border border-border p-6">
-            <h2 className="text-lg font-bold mb-4">Messagerie interne</h2>
-            <p className="text-muted-foreground mb-4">Accès complet à tous les messages du système</p>
-            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-medium">Accéder à la messagerie</button>
-          </div>
-        )}
-
-        {activeSubTab === 'emails' && (
-          <div className="space-y-4">
-            {['Confirmation inscription', 'Rappel paiement', 'Résultats d\'examen'].map((template, i) => (
-              <div key={i} className="bg-card rounded-lg border border-border p-4">
-                <p className="font-semibold mb-2">{template}</p>
-                <div className="flex gap-2">
-                  <button className="text-sm text-primary hover:underline">Éditer</button>
-                  <button className="text-sm text-muted-foreground hover:underline">Aperçu</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    )
-  }
 
   const Reports = () => (
     <div className="space-y-6">

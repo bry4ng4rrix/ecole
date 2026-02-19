@@ -247,93 +247,76 @@ function InfoCard({ title, value, icon: Icon, status }) {
 }
 
 // ============ STUDENT PROFILE ============
-function StudentProfile() {
+function StudentProfile({ currentStudent }) {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Mon Profil</h1>
-        <p className="text-muted-foreground mt-1">Consultation de vos informations personnelles et académiques</p>
+        <p className="text-muted-foreground mt-1">Informations personnelles et académiques</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Profile Card */}
-        <div className="lg:col-span-1 bg-card rounded-lg border border-border p-6">
-          <div className="flex flex-col items-center">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <User className="w-10 h-10 text-primary" />
-            </div>
-            <h2 className="text-xl font-bold">Jean Dupont</h2>
-            <p className="text-sm text-muted-foreground">Étudiant</p>
-            <div className="mt-6 space-y-2 w-full text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Matricule:</span>
-                <span className="font-semibold">24-001</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Classe:</span>
-                <span className="font-semibold">2nde C</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Filière:</span>
-                <span className="font-semibold">Générale</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Details */}
-        <div className="lg:col-span-2 bg-card rounded-lg border border-border p-6">
-          <h2 className="text-lg font-bold mb-6">Informations personnelles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Prénom</p>
-              <p className="font-semibold">Jean</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Nom</p>
-              <p className="font-semibold">Dupont</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Email</p>
-              <p className="font-semibold">jean.dupont@lycee.ma</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Téléphone</p>
-              <p className="font-semibold">+261 32 XX XX XX</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Date d'inscription</p>
-              <p className="font-semibold">01/09/2024</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Statut</p>
-              <span className="px-3 py-1 bg-green-500/20 text-green-600 text-xs rounded-full font-medium">Actif</span>
-            </div>
+      {/* Profile Card */}
+      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg p-8 shadow-lg">
+        <div className="flex items-center gap-4 mb-6">
+          <Avatar className="h-16 w-16 border-2 border-primary-foreground">
+            <AvatarFallback className="text-2xl">{currentStudent?.firstName?.[0]}{currentStudent?.lastName?.[0]}</AvatarFallback>
+          </Avatar>
+          <div>
+            <h2 className="text-2xl font-bold">{currentStudent?.firstName} {currentStudent?.lastName}</h2>
+            <p className="text-primary-foreground/80">Classe: {currentStudent?.class}</p>
           </div>
         </div>
       </div>
 
-      {/* Academic History */}
-      <div className="bg-card rounded-lg border border-border p-6">
-        <h2 className="text-lg font-bold mb-4">Historique académique</h2>
-        <div className="space-y-3">
-          {[
-            { year: '2023-2024', class: '3ème', avg: 11.5, status: 'Admis' },
-            { year: '2024-2025', class: '2nde C', avg: 12.8, status: 'En cours' }
-          ].map((record, i) => (
-            <div key={i} className="flex justify-between items-center p-4 bg-muted rounded-lg">
-              <div>
-                <p className="font-semibold">{record.year} - {record.class}</p>
-                <p className="text-sm text-muted-foreground">Moyenne: {record.avg}/20</p>
-              </div>
-              <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                record.status === 'Admis' ? 'bg-green-500/20 text-green-600' : 'bg-blue-500/20 text-blue-600'
-              }`}>
-                {record.status}
-              </span>
+      {/* Personal Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Informations personnelles</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Email</p>
+              <p className="font-medium">{currentStudent?.email}</p>
             </div>
-          ))}
-        </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Téléphone</p>
+              <p className="font-medium">{currentStudent?.phone}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Date de naissance</p>
+              <p className="font-medium">{currentStudent?.dateOfBirth}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Adresse</p>
+              <p className="font-medium">{currentStudent?.address}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Informations académiques</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Classe</p>
+              <p className="font-medium">{currentStudent?.class}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Moyenne générale</p>
+              <p className="font-medium">{currentStudent?.averageGrade}/20</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Absences</p>
+              <p className="font-medium">{currentStudent?.absences}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">ID Étudiant</p>
+              <p className="font-medium font-mono">{currentStudent?.id}</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
