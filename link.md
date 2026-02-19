@@ -1,41 +1,40 @@
-# SIG-Lycée - Documentation des URLs
 
 ## Pages Principales
 
 ### Tableau de Bord
-- **URL**: `/`
+- **URL**: `https://v0-ecole-phi.vercel.app/`
 - **Description**: Page d'accueil avec statistiques et aperçu général
 
 ### Dashboard Admin
-- **URL**: `/admin`
+- **URL**: `https://v0-ecole-phi.vercel.app/admin`
 - **Description**: Interface d'administration complète
 
 ### Dashboard Enseignant
-- **URL**: `/teacher`
+- **URL**: `https://v0-ecole-phi.vercel.app/teacher`
 - **Description**: Interface pour les enseignants
 
 ### Dashboard Étudiant
-- **URL**: `/student`
+- **URL**: `https://v0-ecole-phi.vercel.app/student`
 - **Description**: Interface pour les étudiants
 
 ## Routes d'Authentification
 
 ### Connexion
-- **URL**: `/login`
+- **URL**: `https://v0-ecole-phi.vercel.app/login`
 - **Description**: Page de connexion pour tous les utilisateurs
 
 ### Inscription
-- **URL**: `/register`
+- **URL**: `https://v0-ecole-phi.vercel.app/register`
 - **Description**: Page d'inscription des nouveaux utilisateurs
 
 ## Sections Admin
 
 ### Gestion Étudiants
-- **URL**: `/admin/students`
+- **URL**: `https://v0-ecole-phi.vercel.app/admin/students`
 - **Description**: CRUD des étudiants, recherche, filtrage
 
 ### Gestion Enseignants
-- **URL**: `/admin/teachers`
+- **URL**: `https://v0-ecole-phi.vercel.app/admin/teachers`
 - **Description**: Gestion du personnel enseignant
 
 ### Gestion Académique

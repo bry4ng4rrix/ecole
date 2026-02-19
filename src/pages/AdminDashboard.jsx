@@ -507,7 +507,7 @@ function AdminDashboard() {
   }
 
   const DashboardOverview = () => (
-    <div className="space-y-8">
+    <div className="space-y-2">
       <div>
         <h1 className="text-3xl font-bold">Tableau de bord</h1>
         <p className="text-muted-foreground mt-1">Bienvenue sur la plateforme SIG-Lycée</p>
