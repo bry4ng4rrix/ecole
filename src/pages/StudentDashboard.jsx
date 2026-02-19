@@ -55,17 +55,21 @@ function StudentDashboard() {
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col">
-      <div className="p-6 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground">Menu Étudiant</h2>
+      <div className="p-6 border-b border-sidebar-border bg-sidebar-primary">
+        <h2 className="text-lg font-semibold text-sidebar-primary-foreground">Menu Étudiant</h2>
       </div>
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-4 space-y-1">
         {menuItems.map(item => {
           const Icon = item.icon
           return (
             <Button
               key={item.id}
               variant={activeTab === item.id ? "default" : "ghost"}
-              className="w-full justify-start"
+              className={`w-full justify-start transition-all ${
+                activeTab === item.id
+                  ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent'
+              }`}
               onClick={() => setActiveTab(item.id)}
             >
               <Icon className="w-4 h-4 mr-3" />
@@ -80,12 +84,12 @@ function StudentDashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-20">
+      <header className="bg-gradient-to-r from-primary to-accent border-b border-border sticky top-0 z-20 shadow-md">
         <div className="flex justify-between items-center px-6 py-4">
           <div className="flex items-center gap-4">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="md:hidden">
+                <Button variant="ghost" size="sm" className="md:hidden text-primary-foreground hover:bg-white/20">
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
@@ -94,12 +98,12 @@ function StudentDashboard() {
               </SheetContent>
             </Sheet>
             <div>
-              <h1 className="text-2xl font-bold text-primary">SIG-Lycée Étudiant</h1>
-              <p className="text-xs text-muted-foreground">Portail Étudiant Sécurisé</p>
+              <h1 className="text-2xl font-bold text-primary-foreground">SIG-Lycée Étudiant</h1>
+              <p className="text-xs text-primary-foreground/80">Portail Étudiant Sécurisé</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="relative">
+            <Button variant="ghost" size="sm" className="relative text-primary-foreground hover:bg-white/20">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
             </Button>
@@ -107,7 +111,7 @@ function StudentDashboard() {
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="text-destructive hover:text-destructive"
+              className="text-primary-foreground hover:bg-white/20"
             >
               <LogOut className="w-5 h-5" />
               <span className="hidden sm:inline ml-2">Déconnexion</span>
@@ -118,7 +122,7 @@ function StudentDashboard() {
 
       <div className="flex">
         {/* Sidebar desktop */}
-        <aside className="hidden md:block w-64 bg-card border-r border-border">
+        <aside className="hidden md:block w-64 bg-sidebar border-r border-sidebar-border shadow-lg">
           <SidebarContent />
         </aside>
 

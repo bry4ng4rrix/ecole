@@ -707,23 +707,23 @@ function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-20">
+      <header className="bg-gradient-to-r from-primary to-accent border-b border-border sticky top-0 z-20 shadow-md">
         <div className="flex justify-between items-center px-6 py-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden p-2 hover:bg-muted rounded-lg"
+              className="md:hidden p-2 hover:bg-white/20 rounded-lg text-primary-foreground transition-colors"
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-primary">SIG-Lycée</h1>
-              <p className="text-xs text-muted-foreground">Système Informatisé de Gestion</p>
+              <h1 className="text-2xl font-bold text-primary-foreground">SIG-Lycée</h1>
+              <p className="text-xs text-primary-foreground/80">Système Informatisé de Gestion</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-destructive hover:bg-muted rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-primary-foreground hover:bg-white/20 rounded-lg transition-colors"
           >
             <LogOut className="w-5 h-5" />
             <span className="hidden sm:inline">Déconnexion</span>
@@ -735,18 +735,18 @@ function AdminDashboard() {
         {/* Sidebar */}
         <aside className={`${
           sidebarOpen ? 'w-64' : 'w-0'
-        } bg-sidebar border-r border-sidebar-border overflow-y-auto transition-all duration-300 hidden md:block fixed md:relative h-[calc(100vh-73px)]`}>
-          <nav className="p-4 space-y-2">
+        } bg-sidebar border-r border-sidebar-border overflow-y-auto transition-all duration-300 hidden md:block fixed md:relative h-[calc(100vh-73px)] shadow-lg`}>
+          <nav className="p-4 space-y-1">
             {menuItems.map(item => {
               const Icon = item.icon
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${
                     activeTab === item.id
-                      ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                      : 'text-sidebar-foreground hover:bg-sidebar-accent'
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground'
                   }`}
                 >
                   <Icon className="w-4 h-4 flex-shrink-0" />

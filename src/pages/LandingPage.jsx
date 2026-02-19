@@ -34,7 +34,7 @@ export default function LandingPage() {
           }}
         >
           {/* Calque de superposition avec dégradé */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-red-0"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/80 to-accent/70"></div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -42,14 +42,14 @@ export default function LandingPage() {
               <h2 className="text-4xl sm:text-5xl font-bold leading-tight drop-shadow-lg">
                 Excellence Académique à Madagascar
               </h2>
-              <p className="text-lg text-blue-100 leading-relaxed">
+              <p className="text-lg text-primary-foreground/90 leading-relaxed">
                 Découvrez notre établissement d'enseignement de référence, offrant une formation de qualité du collège au lycée avec des programmes internationaux et un encadrement personnalisé.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/presentation" className="bg-white text-blue-700 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2">
+                <Link to="/presentation" className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-primary-foreground transition flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
                   Découvrir Plus <ChevronRight size={20} />
                 </Link>
-                <Link to="/register" className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition">
+                <Link to="/register" className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/20 transition shadow-lg hover:shadow-xl">
                   Inscriptions
                 </Link>
               </div>
@@ -60,11 +60,11 @@ export default function LandingPage() {
       </section>
 
       {/* Presentation Section */}
-      <section className="py-20 bg-blue-50 mt-4">
+      <section className="py-20 bg-secondary mt-4">
         <div className="  items-center">
           <div className="text-center mb-16 ">
-            <h3 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-4">Notre Vision</h3>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <h3 className="text-3xl sm:text-4xl font-bold text-primary mb-4">Notre Vision</h3>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Préparer les élèves à réussir dans un monde en constante évolution
             </p>
           </div>
@@ -88,10 +88,10 @@ export default function LandingPage() {
                 description: 'Développement du civisme, solidarité et respect de la diversité culturelle.',
               },
             ].map((item, idx) => (
-              <div key={idx} className="bg-gray-50 rounded-xl p-8 hover:shadow-lg transition">
+              <div key={idx} className="bg-card rounded-xl p-8 hover:shadow-lg transition border border-border">
                 <div className="text-5xl mb-4">{item.icon}</div>
-                <h4 className="text-xl font-bold text-blue-900 mb-3">{item.title}</h4>
-                <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                <h4 className="text-xl font-bold text-primary mb-3">{item.title}</h4>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
@@ -99,9 +99,9 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl sm:text-4xl font-bold text-blue-900 text-center mb-16">
+          <h3 className="text-3xl sm:text-4xl font-bold text-primary text-center mb-16">
             Nos Atouts
           </h3>
 
@@ -124,13 +124,13 @@ export default function LandingPage() {
                 items: ['Tutorat académique', 'Orientation professionnelle', 'Soutien psychosocial'],
               },
             ].map((feature, idx) => (
-              <div key={idx} className="bg-white rounded-lg p-8 shadow-sm hover:shadow-md transition">
-                <h4 className="text-xl font-bold text-blue-900 mb-4">{feature.title}</h4>
+              <div key={idx} className="bg-card rounded-lg p-8 shadow-sm hover:shadow-md transition border border-border">
+                <h4 className="text-xl font-bold text-primary mb-4">{feature.title}</h4>
                 <ul className="space-y-3">
                   {feature.items.map((item, i) => (
                     <li key={i} className="flex gap-3">
-                      <span className="text-orange-500 font-bold mt-0.5">✓</span>
-                      <span className="text-gray-700">{item}</span>
+                      <span className="text-accent font-bold mt-0.5">✓</span>
+                      <span className="text-muted-foreground">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -141,12 +141,12 @@ export default function LandingPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800">
+      <section className="py-20 bg-gradient-to-r from-primary to-accent">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+          <h3 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">
             Restez Connecté
           </h3>
-          <p className="text-blue-100 text-lg mb-8">
+          <p className="text-primary-foreground/90 text-lg mb-8">
             Inscrivez-vous à notre newsletter pour recevoir les actualités de l'établissement
           </p>
 
@@ -156,12 +156,12 @@ export default function LandingPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Votre email"
-              className="flex-1 px-6 py-3 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none"
+              className="flex-1 px-6 py-3 rounded-lg bg-white text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary-foreground"
               required
             />
             <button
               type="submit"
-              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition"
+              className="bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-lg font-semibold transition shadow-md"
             >
               S'inscrire
             </button>
@@ -176,7 +176,7 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-card border-y border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             {[
@@ -186,8 +186,8 @@ export default function LandingPage() {
               { number: '98%', label: 'Réussite au bac' },
             ].map((stat, idx) => (
               <div key={idx}>
-                <div className="text-4xl font-bold text-blue-600 mb-2">{stat.number}</div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
+                <div className="text-4xl font-bold text-primary mb-2">{stat.number}</div>
+                <div className="text-muted-foreground font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -195,38 +195,38 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-blue-900 text-white py-12">
+      <footer className="bg-sidebar text-sidebar-foreground py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <h4 className="font-bold mb-4">Établissement</h4>
-              <ul className="space-y-2 text-sm text-blue-100">
-                <li><Link to="/presentation" className="hover:text-white transition">Présentation</Link></li>
-                <li><Link to="/presentation" className="hover:text-white transition">Historique</Link></li>
-                <li><Link to="/presentation" className="hover:text-white transition">Équipe</Link></li>
+              <ul className="space-y-2 text-sm text-sidebar-foreground/80">
+                <li><Link to="/presentation" className="hover:text-sidebar-foreground transition">Présentation</Link></li>
+                <li><Link to="/presentation" className="hover:text-sidebar-foreground transition">Historique</Link></li>
+                <li><Link to="/presentation" className="hover:text-sidebar-foreground transition">Équipe</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold mb-4">Programmes</h4>
-              <ul className="space-y-2 text-sm text-blue-100">
-                <li><Link to="/programmes" className="hover:text-white transition">Collège</Link></li>
-                <li><Link to="/programmes" className="hover:text-white transition">Lycée</Link></li>
-                <li><Link to="/programmes" className="hover:text-white transition">Spécialités</Link></li>
+              <ul className="space-y-2 text-sm text-sidebar-foreground/80">
+                <li><Link to="/programmes" className="hover:text-sidebar-foreground transition">Collège</Link></li>
+                <li><Link to="/programmes" className="hover:text-sidebar-foreground transition">Lycée</Link></li>
+                <li><Link to="/programmes" className="hover:text-sidebar-foreground transition">Spécialités</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold mb-4">Services</h4>
-              <ul className="space-y-2 text-sm text-blue-100">
-                <li><Link to="/services" className="hover:text-white transition">Ressources</Link></li>
-                <li><Link to="/services" className="hover:text-white transition">Activités</Link></li>
-                <li><Link to="/services" className="hover:text-white transition">Bourses</Link></li>
+              <ul className="space-y-2 text-sm text-sidebar-foreground/80">
+                <li><Link to="/services" className="hover:text-sidebar-foreground transition">Ressources</Link></li>
+                <li><Link to="/services" className="hover:text-sidebar-foreground transition">Activités</Link></li>
+                <li><Link to="/services" className="hover:text-sidebar-foreground transition">Bourses</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold mb-4">Suivez-Nous</h4>
               <div className="flex gap-4">
                 {['f', 't', 'i', 'l'].map((icon) => (
-                  <a key={icon} to="#" className="w-10 h-10 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition">
+                  <a key={icon} to="#" className="w-10 h-10 bg-sidebar-accent hover:bg-sidebar-primary rounded-full flex items-center justify-center transition">
                     {icon}
                   </a>
                 ))}
@@ -234,12 +234,12 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="border-t border-blue-800 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-blue-100">
+          <div className="border-t border-sidebar-border pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-sidebar-foreground/80">
               <p>&copy; 2025 Collège-Lycée Madagascar. Tous droits réservés.</p>
               <div className="flex gap-6">
-                <a to="#" className="hover:text-white transition">Politique de Confidentialité</a>
-                <a to="#" className="hover:text-white transition">Conditions d'Utilisation</a>
+                <a to="#" className="hover:text-sidebar-foreground transition">Politique de Confidentialité</a>
+                <a to="#" className="hover:text-sidebar-foreground transition">Conditions d'Utilisation</a>
               </div>
             </div>
           </div>
