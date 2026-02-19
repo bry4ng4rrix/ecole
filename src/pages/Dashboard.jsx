@@ -181,7 +181,7 @@ function Dashboard() {
 
         {/* Contenu principal */}
         <div className="flex-1">
-          <main className="p-4 md:p-8">
+          <main className="p-4 md:p-2">
             <div className="max-w-7xl mx-auto">
               <div className="mb-8">
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground">
